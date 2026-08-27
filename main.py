@@ -6,25 +6,23 @@ import matplotlib.pyplot as mpl
 df = yf.download(
     'AAPL',
     start='2020-01-01',
-    end='2026-08-26'
+    end='2026-08-27'
 )
 
 close = df['Close']['AAPL']
 
 sma_20 = close.rolling(20).mean()
 sma_50 = close.rolling(50).mean()
-
 signal = (sma_20 > sma_50).astype(int)
-
 daily_return = close.pct_change()
-
 strategy_return = signal * daily_return
-
 cumulative_return = (strategy_return + 1).cumprod()
+total_return = ((cumulative_return.tail(1) - 1) * 100)
 
-print("последние 20 торговых дней + сигнал: \n", signal.tail(20))
+print("Последние 20 торговых дней + сигнал: \n", signal.tail(20))
 print("Доходность AAPL за последние 10 торговых дней: \n",daily_return.tail(10))
-print("Последние 5 значений накопленого результа: \n",cumulative_return.tail())
+print("Последние 5 значений накопленого результата: \n",cumulative_return.tail())
+print("Итоговая доходность стратегии:", total_return)
 
 mpl.plot(close, label="AAPL")
 mpl.plot(sma_20, label="SMA 20")
