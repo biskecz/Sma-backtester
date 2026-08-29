@@ -13,7 +13,7 @@ df = yf.download(
 close = df['Close']['AAPL']
 close = close.dropna()
 
-#SMA INDICATORS
+# SMA INDICATORS
 sma_20 = close.rolling(20).mean()
 sma_50 = close.rolling(50).mean()
 
@@ -35,6 +35,14 @@ difference = total_buy_hold - total_return
 running_max = cumulative_return.cummax()
 drawdown = (cumulative_return - running_max) / running_max
 max_drawdown = drawdown.min() * 100
+running_max_buy_hold = cumulative_buy_hold.cummax()
+drawdown_buy_hold = (
+    cumulative_buy_hold - running_max_buy_hold
+) / running_max_buy_hold
+
+max_drawdown_buy_hold = drawdown_buy_hold.min() * 100
+
+drawdown_difference = max_drawdown_buy_hold - max_drawdown
 
 
 # OUTPUT BLOCK
@@ -45,12 +53,18 @@ print("Maximum drawdown:", round(max_drawdown, 2), "%")
 
 print("\n" + "=" * 20, "BUY & HOLD", "=" * 20)
 print("Total return:", round(total_buy_hold, 2), "%")
+print("Maximum drawdown", round(max_drawdown_buy_hold, 2), "%")
 
 print("\n" + "=" * 20, "Comparison", "=" * 20)
 print("Buy & Hold advantage:", round(difference, 2), "percentage points")
 
 print("\n" + "=" * 20, "Current Signal", "=" * 20)
 print("Signal:", signal.iloc[-1])
+
+print("\n" + "-" * 20, "Risk Comparison", "-" * 20)
+print("SMA maximum drawdown: ", round(max_drawdown, 2), "%")
+print("Buy & hold maximum drawdown: ", round(max_drawdown_buy_hold, 2), "%")
+print("Drawdown difference:", round(drawdown_difference, 2), "percentage points")
 
 
 # PRICE CHART
