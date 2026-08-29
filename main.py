@@ -59,6 +59,12 @@ number_of_sells = sell_signal.sum()
 buy_prices = close.loc[buy_dates]
 sell_prices = close.loc[sell_dates]
 
+sma_max_drawdown_date = drawdown.idxmin()
+buy_hold_max_drawdown_date = drawdown_buy_hold.idxmin()
+
+sma_max_drawdown_value = drawdown.loc[sma_max_drawdown_date] * 100
+buy_hold_max_drawdown_value = drawdown_buy_hold.loc[buy_hold_max_drawdown_date] * 100
+
 
 # OUTPUT BLOCK
 
@@ -127,14 +133,58 @@ mpl.grid(alpha=0.3)
 
 
 # PERFORMANCE CHART
-mpl.figure()
+mpl.figure(figsize=(18, 7))
 
-mpl.plot(cumulative_return, label="SMA strategy")
+mpl.plot(cumulative_return, label="SMA Strategy")
 mpl.plot(cumulative_buy_hold, label="Buy & Hold")
 
-mpl.title("SMA strategy VS Buy & Hold")
+mpl.title("SMA Strategy VS Buy & Hold")
 mpl.xlabel("Date")
 mpl.ylabel("Cumulative Return")
 mpl.legend()
+mpl.grid(alpha=0.3)
+
+
+# DRAWDOWN CHART
+mpl.figure(figsize=(18, 7))
+
+mpl.plot(
+    drawdown * 100,
+    label="SMA Strategy"
+)
+
+mpl.plot(
+    drawdown_buy_hold * 100,
+    label="Buy & Hold"
+)
+
+# SMA maximum drawdown
+mpl.scatter(
+    sma_max_drawdown_date,
+    sma_max_drawdown_value,
+    color="red",
+    s=120,
+    edgecolors="black",
+    zorder=5,
+    label=f"SMA Max Drawdown: {sma_max_drawdown_value:.2f}%"
+)
+
+# Buy & Hold maximum drawdown
+mpl.scatter(
+    buy_hold_max_drawdown_date,
+    buy_hold_max_drawdown_value,
+    color="orange",
+    s=120,
+    edgecolors="black",
+    zorder=5,
+    label=f"Buy & Hold Max Drawdown: {buy_hold_max_drawdown_value:.2f}%"
+)
+
+mpl.title("SMA Strategy VS Buy & Hold - Drawdown")
+mpl.xlabel("Date")
+mpl.ylabel("Drawdown (%)")
+mpl.legend()
+mpl.grid(alpha=0.3)
+
 
 mpl.show()
