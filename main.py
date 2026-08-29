@@ -1,8 +1,9 @@
 import pandas as pd
-import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as mpl
 
+
+# DATA BLOCK
 df = yf.download(
     'AAPL',
     start='2020-01-01',
@@ -10,27 +11,49 @@ df = yf.download(
 )
 
 close = df['Close']['AAPL']
+close = close.dropna()
 
+#SMA INDICATORS
 sma_20 = close.rolling(20).mean()
 sma_50 = close.rolling(50).mean()
+
+# SMA STRATEGY
 signal = (sma_20 > sma_50).astype(int)
 daily_return = close.pct_change()
 strategy_return = signal.shift(1) * daily_return
 cumulative_return = (strategy_return + 1).cumprod()
-total_return = ((cumulative_return.tail(1) - 1) * 100)          # SMA 20 / SMA 50
+total_return = ((cumulative_return.iloc[-1] - 1) * 100)
+
+# BUY & HOLD
 cumulative_buy_hold = (daily_return + 1).cumprod()
-total_buy_hold = ((cumulative_buy_hold.tail(1) - 1 ) * 100)     # buy & hold
+total_buy_hold = ((cumulative_buy_hold.iloc[-1] - 1) * 100)     
+
+# COMPARISON 
 difference = total_buy_hold - total_return 
 
-print("Последние 20 торговых дней + сигнал: \n", signal.tail(20))
-print("Доходность AAPL за последние 10 торговых дней: \n",daily_return.tail(10))
-print("Последние 5 значений накопленого результата: \n",cumulative_return.tail())
-print("Итоговая доходность стратегии:", total_return)
-print("Накопленный результат Buy & Hold: \n", cumulative_buy_hold)
-print("Итоговая доходность Buy & Hold:", total_buy_hold)
-print("Преимущество BUY & HOLD над SMA: ", difference)
+# SMA DRAWDOWN 
+running_max = cumulative_return.cummax()
+drawdown = (cumulative_return - running_max) / running_max
+max_drawdown = drawdown.min() * 100
 
-# графики AAPL price и SMA (20 & 50)
+
+# OUTPUT BLOCK
+
+print("\n" + "=" * 20, "SMA Strategy", "=" * 20)
+print("Total return:", round(total_return, 2), "%")
+print("Maximum drawdown:", round(max_drawdown, 2), "%")
+
+print("\n" + "=" * 20, "BUY & HOLD", "=" * 20)
+print("Total return:", round(total_buy_hold, 2), "%")
+
+print("\n" + "=" * 20, "Comparison", "=" * 20)
+print("Buy & Hold advantage:", round(difference, 2), "percentage points")
+
+print("\n" + "=" * 20, "Current Signal", "=" * 20)
+print("Signal:", signal.iloc[-1])
+
+
+# PRICE CHART
 mpl.figure()
 
 mpl.plot(close, label="AAPL")
@@ -42,7 +65,8 @@ mpl.xlabel("Date")
 mpl.ylabel("Price")
 mpl.legend()
 
-# сравнение доходности SMA против Buy & Hold
+
+# PERFORMANCE CHART
 mpl.figure()
 
 mpl.plot(cumulative_return, label="SMA strategy")
