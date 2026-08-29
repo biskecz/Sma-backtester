@@ -44,6 +44,21 @@ max_drawdown_buy_hold = drawdown_buy_hold.min() * 100
 
 drawdown_difference = max_drawdown_buy_hold - max_drawdown
 
+signal_change = signal.diff()
+
+# 1 = buy, -1 = sell, 0 = nothing
+buy_signal = signal_change == 1
+sell_signal = signal_change == -1
+
+buy_dates = close.index[buy_signal]
+sell_dates = close.index[sell_signal]
+
+number_of_buys = buy_signal.sum()
+number_of_sells = sell_signal.sum()
+
+buy_prices = close.loc[buy_dates]
+sell_prices = close.loc[sell_dates]
+
 
 # OUTPUT BLOCK
 
@@ -67,17 +82,48 @@ print("Buy & hold maximum drawdown: ", round(max_drawdown_buy_hold, 2), "%")
 print("Drawdown difference:", round(drawdown_difference, 2), "percentage points")
 
 
+print("\n" + "=" * 20, "Trades", "=" * 20)
+print("Number of BUY signals:", number_of_buys)
+print("Number of SELL signals:", number_of_sells)
+print("\nBUY dates:")
+print(buy_dates)
+print("\nSELL dates:")
+print(sell_dates)
+
 # PRICE CHART
-mpl.figure()
+mpl.figure(figsize=(18,9))
 
-mpl.plot(close, label="AAPL")
-mpl.plot(sma_20, label="SMA 20")
-mpl.plot(sma_50, label="SMA 50")
+mpl.plot(close, label="AAPL", linewidth=1.5)
+mpl.plot(sma_20, label="SMA 20", linewidth=1.2, alpha=0.8)
+mpl.plot(sma_50, label="SMA 50", linewidth=1.2, alpha=0.8)
 
-mpl.title("AAPL stock chart, SMA 20 & SMA 50")
+mpl.scatter(
+    buy_dates,
+    buy_prices, 
+    marker="^", 
+    color="green",
+    edgecolors="black",
+    s=75,
+    label="BUY",
+    zorder=5
+)
+
+mpl.scatter(
+sell_dates, 
+    sell_prices, 
+    marker="v", 
+    color="red",
+    edgecolors="black",
+    s=75,
+    label="SELL",
+    zorder=5
+)
+
+mpl.title("AAPL - SMA 20 / SMA 50 Strategy")
 mpl.xlabel("Date")
 mpl.ylabel("Price")
 mpl.legend()
+mpl.grid(alpha=0.3)
 
 
 # PERFORMANCE CHART
