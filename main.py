@@ -6,7 +6,7 @@ import matplotlib.pyplot as mpl
 df = yf.download(
     'AAPL',
     start='2020-01-01',
-    end='2026-08-27'
+    end='2026-08-29'
 )
 
 close = df['Close']['AAPL']
@@ -15,7 +15,7 @@ sma_20 = close.rolling(20).mean()
 sma_50 = close.rolling(50).mean()
 signal = (sma_20 > sma_50).astype(int)
 daily_return = close.pct_change()
-strategy_return = signal * daily_return
+strategy_return = signal.shift(1) * daily_return
 cumulative_return = (strategy_return + 1).cumprod()
 total_return = ((cumulative_return.tail(1) - 1) * 100)          # SMA 20 / SMA 50
 cumulative_buy_hold = (daily_return + 1).cumprod()
