@@ -65,7 +65,27 @@ buy_hold_max_drawdown_date = drawdown_buy_hold.idxmin()
 sma_max_drawdown_value = drawdown.loc[sma_max_drawdown_date] * 100
 buy_hold_max_drawdown_value = drawdown_buy_hold.loc[buy_hold_max_drawdown_date] * 100
 
+# TRADE ANALYSIS
+trade_return = (
+    sell_prices.values / buy_prices.values -1
+) * 100
 
+number_of_trades = len(trade_return)
+
+winning_trades = trade_return > 0
+lossing_trades = trade_return < 0
+
+win_rate = winning_trades.sum() / number_of_trades * 100
+
+average_trade = trade_return.mean()
+
+best_trade_index = trade_return.argmax()
+best_trade = trade_return[best_trade_index]
+best_trade_date = sell_dates[best_trade_index]
+
+worst_trade_index = trade_return.argmin()
+worst_trade = trade_return[worst_trade_index]
+worst_trade_date = sell_dates[worst_trade_index]
 # OUTPUT BLOCK
 
 print("\n" + "=" * 20, "SMA Strategy", "=" * 20)
@@ -95,6 +115,24 @@ print("\nBUY dates:")
 print(buy_dates)
 print("\nSELL dates:")
 print(sell_dates)
+
+print("\n" + "=" * 20, "Trade Analysis", "=" * 20)
+print("Number of trades:", number_of_trades)
+print("Winning trades:", winning_trades.sum())
+print("Losing trades:", lossing_trades.sum())
+print("Win rate:", round(win_rate, 2), "%")
+print("Average trade:", round(average_trade, 2), "%")
+
+print("\nBest trade:")
+print("Date:", best_trade_date)
+print("Return:", round(best_trade, 2), "%")
+
+print("\nWorst trade:")
+print("Date:", worst_trade_date)
+print("Return:", round(worst_trade, 2), "%")
+
+
+
 
 # PRICE CHART
 mpl.figure(figsize=(18,9))
