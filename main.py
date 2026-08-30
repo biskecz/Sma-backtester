@@ -86,8 +86,9 @@ best_trade_date = sell_dates[best_trade_index]
 worst_trade_index = trade_return.argmin()
 worst_trade = trade_return[worst_trade_index]
 worst_trade_date = sell_dates[worst_trade_index]
-# OUTPUT BLOCK
 
+
+# OUTPUT BLOCK
 print("\n" + "=" * 20, "SMA Strategy", "=" * 20)
 print("Total return:", round(total_return, 2), "%")
 print("Maximum drawdown:", round(max_drawdown, 2), "%")
@@ -130,6 +131,21 @@ print("Return:", round(best_trade, 2), "%")
 print("\nWorst trade:")
 print("Date:", worst_trade_date)
 print("Return:", round(worst_trade, 2), "%")
+
+# TRADE TABLE
+trade_df = pd.DataFrame({
+    "BUY date": buy_dates.to_numpy(),
+    "BUY price": buy_prices.to_numpy(),
+    "SELL date": sell_dates.to_numpy(),
+    "SELL price": sell_prices.to_numpy(),
+    "Return (%)": trade_return
+})
+
+trade_df.index = range(1, len(trade_df) + 1)
+trade_df.index.name = "Trade"
+
+print("\n" + "=" * 20, "Trade Table", "=" * 20)
+print(trade_df.round(2))
 
 
 
