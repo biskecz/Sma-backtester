@@ -148,8 +148,6 @@ print("\n" + "=" * 20, "Trade Table", "=" * 20)
 print(trade_df.round(2))
 
 
-
-
 # PRICE CHART
 mpl.figure(figsize=(18,9))
 
