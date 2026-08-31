@@ -11,7 +11,17 @@ def main():
 
     close = load_data()
 
-    strategy = calculate_strategy(close)
+    fast_window = 50
+    slow_window = 200
+    
+    commission = 0.001
+    strategy = calculate_strategy(
+        close,
+        fast_window,
+        slow_window,
+        commission
+    )
+    
 
     metrics = calculate_metrics(
         close,

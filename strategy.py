@@ -1,14 +1,30 @@
-def calculate_strategy(close):
+def calculate_strategy(
+    close,
+    fast_window=20,
+    slow_window=50,
+    commission=0.001
+):
 
-    sma_20 = close.rolling(20).mean()
-    sma_50 = close.rolling(50).mean()
+    sma_20 = close.rolling(fast_window).mean()
+    sma_50 = close.rolling(slow_window).mean()
 
     signal = (sma_20 > sma_50).astype(int)
 
     daily_return = close.pct_change()
 
+    signal_change = signal.diff()
+
+    buy_signal = signal_change == 1
+    sell_signal = signal_change == -1
+
+    transaction_cost = signal.astype(float) * 0
+
+    transaction_cost.loc[buy_signal] = -commission
+    transaction_cost.loc[sell_signal] = -commission
+
     strategy_return = (
         signal.shift(1) * daily_return
+        + transaction_cost
     )
 
     cumulative_return = (
@@ -18,11 +34,6 @@ def calculate_strategy(close):
     cumulative_buy_hold = (
         daily_return + 1
     ).cumprod()
-
-    signal_change = signal.diff()
-
-    buy_signal = signal_change == 1
-    sell_signal = signal_change == -1
 
     buy_dates = close.index[buy_signal]
     sell_dates = close.index[sell_signal]

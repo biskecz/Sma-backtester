@@ -79,6 +79,13 @@ def calculate_metrics(close, strategy):
 
     # TRADE ANALYSIS
 
+    trade_count = min(len(buy_prices), len(sell_prices))
+
+    buy_prices = buy_prices[:trade_count]
+    sell_prices = sell_prices[:trade_count]
+    buy_dates = buy_dates[:trade_count]
+    sell_dates = sell_dates[:trade_count]
+
     trade_return = (
         sell_prices.to_numpy()
         / buy_prices.to_numpy()
