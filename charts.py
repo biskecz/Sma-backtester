@@ -1,15 +1,7 @@
 import matplotlib.pyplot as mpl
 
 
-def plot_price_chart(
-    close,
-    sma_20,
-    sma_50,
-    buy_dates,
-    sell_dates,
-    buy_prices,
-    sell_prices
-):
+def plot_price_chart(close, strategy):
 
     mpl.figure(figsize=(18, 9))
 
@@ -20,22 +12,22 @@ def plot_price_chart(
     )
 
     mpl.plot(
-        sma_20,
+        strategy["sma_20"],
         label="SMA 20",
         linewidth=1.2,
         alpha=0.8
     )
 
     mpl.plot(
-        sma_50,
+        strategy["sma_50"],
         label="SMA 50",
         linewidth=1.2,
         alpha=0.8
     )
 
     mpl.scatter(
-        buy_dates,
-        buy_prices,
+        strategy["buy_dates"],
+        strategy["buy_prices"],
         marker="^",
         color="green",
         edgecolors="black",
@@ -45,8 +37,8 @@ def plot_price_chart(
     )
 
     mpl.scatter(
-        sell_dates,
-        sell_prices,
+        strategy["sell_dates"],
+        strategy["sell_prices"],
         marker="v",
         color="red",
         edgecolors="black",
@@ -62,20 +54,17 @@ def plot_price_chart(
     mpl.grid(alpha=0.3)
 
 
-def plot_performance_chart(
-    cumulative_return,
-    cumulative_buy_hold
-):
+def plot_performance_chart(strategy):
 
     mpl.figure(figsize=(18, 7))
 
     mpl.plot(
-        cumulative_return,
+        strategy["cumulative_return"],
         label="SMA Strategy"
     )
 
     mpl.plot(
-        cumulative_buy_hold,
+        strategy["cumulative_buy_hold"],
         label="Buy & Hold"
     )
 
@@ -86,58 +75,64 @@ def plot_performance_chart(
     mpl.grid(alpha=0.3)
 
 
-def plot_drawdown_chart(
-    drawdown,
-    drawdown_buy_hold,
-    sma_max_drawdown_date,
-    sma_max_drawdown_value,
-    buy_hold_max_drawdown_date,
-    buy_hold_max_drawdown_value
-):
+def plot_drawdown_chart(metrics):
 
     mpl.figure(figsize=(18, 7))
 
     mpl.plot(
-        drawdown * 100,
+        metrics["drawdown"] * 100,
         label="SMA Strategy"
     )
 
     mpl.plot(
-        drawdown_buy_hold * 100,
+        metrics["drawdown_buy_hold"] * 100,
         label="Buy & Hold"
     )
 
     mpl.scatter(
-        sma_max_drawdown_date,
-        sma_max_drawdown_value,
+        metrics["sma_max_drawdown_date"],
+        metrics["sma_max_drawdown_value"],
         color="red",
         s=120,
         edgecolors="black",
         zorder=5,
         label=(
             f"SMA Max Drawdown: "
-            f"{sma_max_drawdown_value:.2f}%"
+            f"{metrics['sma_max_drawdown_value']:.2f}%"
         )
     )
 
     mpl.scatter(
-        buy_hold_max_drawdown_date,
-        buy_hold_max_drawdown_value,
+        metrics["buy_hold_max_drawdown_date"],
+        metrics["buy_hold_max_drawdown_value"],
         color="orange",
         s=120,
         edgecolors="black",
         zorder=5,
         label=(
             f"Buy & Hold Max Drawdown: "
-            f"{buy_hold_max_drawdown_value:.2f}%"
+            f"{metrics['buy_hold_max_drawdown_value']:.2f}%"
         )
     )
 
-    mpl.title(
-        "SMA Strategy VS Buy & Hold - Drawdown"
-    )
-
+    mpl.title("SMA Strategy VS Buy & Hold - Drawdown")
     mpl.xlabel("Date")
     mpl.ylabel("Drawdown (%)")
     mpl.legend()
     mpl.grid(alpha=0.3)
+
+
+def show_charts(close, strategy, metrics):
+
+    plot_price_chart(
+        close,
+        strategy
+    )
+
+    plot_performance_chart(
+        strategy
+    )
+
+    plot_drawdown_chart(
+        metrics
+    )

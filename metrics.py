@@ -1,16 +1,17 @@
 import pandas as pd
 
 
-def calculate_metrics(
-    close,
-    signal,
-    cumulative_return,
-    cumulative_buy_hold,
-    buy_dates,
-    sell_dates,
-    buy_prices,
-    sell_prices
-):
+def calculate_metrics(close, strategy):
+
+    cumulative_return = strategy["cumulative_return"]
+    cumulative_buy_hold = strategy["cumulative_buy_hold"]
+
+    buy_dates = strategy["buy_dates"]
+    sell_dates = strategy["sell_dates"]
+
+    buy_prices = strategy["buy_prices"]
+    sell_prices = strategy["sell_prices"]
+
 
     # TOTAL RETURN
 
@@ -42,7 +43,9 @@ def calculate_metrics(
         cumulative_buy_hold - running_max_buy_hold
     ) / running_max_buy_hold
 
-    max_drawdown_buy_hold = drawdown_buy_hold.min() * 100
+    max_drawdown_buy_hold = (
+        drawdown_buy_hold.min() * 100
+    )
 
     drawdown_difference = (
         max_drawdown_buy_hold - max_drawdown
@@ -141,7 +144,11 @@ def calculate_metrics(
         "Return (%)": trade_return
     })
 
-    trade_df.index = range(1, len(trade_df) + 1)
+    trade_df.index = range(
+        1,
+        len(trade_df) + 1
+    )
+
     trade_df.index.name = "Trade"
 
 
