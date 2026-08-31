@@ -88,6 +88,13 @@ worst_trade = trade_return[worst_trade_index]
 worst_trade_date = sell_dates[worst_trade_index]
 
 
+# PROFIT FACTOR
+gross_profit = trade_return[trade_return > 0].sum()
+gross_loss = -trade_return[trade_return < 0].sum()
+
+profit_factor = gross_profit / gross_loss
+
+
 # OUTPUT BLOCK
 print("\n" + "=" * 20, "SMA Strategy", "=" * 20)
 print("Total return:", round(total_return, 2), "%")
@@ -123,6 +130,7 @@ print("Winning trades:", winning_trades.sum())
 print("Losing trades:", lossing_trades.sum())
 print("Win rate:", round(win_rate, 2), "%")
 print("Average trade:", round(average_trade, 2), "%")
+print("Profit factor:", round(profit_factor, 2))
 
 print("\nBest trade:")
 print("Date:", best_trade_date)
