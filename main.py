@@ -9,29 +9,46 @@ import matplotlib.pyplot as mpl
 
 def main():
 
+    # SETTINGS
+
+    fast_window = 20
+    slow_window = 50
+
+    commission = 0.001
+
+
+    # DATA
+
     close = load_data()
 
-    fast_window = 50
-    slow_window = 200
-    
-    commission = 0.001
+
+    # STRATEGY
+
     strategy = calculate_strategy(
         close,
         fast_window,
         slow_window,
         commission
     )
-    
+
+
+    # METRICS
 
     metrics = calculate_metrics(
         close,
         strategy
     )
 
+
+    # REPORT
+
     print_results(
         strategy,
         metrics
     )
+
+
+    # CHARTS
 
     show_charts(
         close,

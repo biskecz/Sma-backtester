@@ -1,129 +1,44 @@
 # SMA Backtester
 
-## 🇷🇺 Русская версия
+Простой backtesting-проект на Python для проверки стратегии пересечения двух скользящих средних (SMA).
 
-Простой backtester торговой стратегии на основе пересечения **SMA 20** и **SMA 50**.
+Проект использует исторические данные AAPL и сравнивает результат SMA-стратегии с пассивной стратегией Buy & Hold.
 
-Проект загружает исторические данные AAPL, рассчитывает торговые сигналы и сравнивает результат стратегии с обычным **Buy & Hold**.
+## Возможности
 
-### Возможности
+* загрузка исторических данных AAPL;
+* SMA с настраиваемыми периодами;
+* BUY/SELL сигналы при пересечении SMA;
+* transaction costs;
+* Total Return;
+* CAGR;
+* Maximum Drawdown;
+* Sharpe Ratio;
+* Win Rate;
+* Average Trade;
+* Profit Factor;
+* Best/Worst Trade;
+* таблица сделок;
+* график цены и SMA;
+* график стратегии против Buy & Hold;
+* график Drawdown.
 
-* Загрузка исторических данных через `yfinance`
-* Расчёт SMA 20 и SMA 50
-* Определение BUY и SELL сигналов
-* Расчёт общей доходности стратегии
-* Сравнение с Buy & Hold
-* Расчёт Maximum Drawdown
-* Анализ отдельных сделок
-* Расчёт Win Rate
-* Расчёт средней доходности сделки
-* Поиск лучшей и худшей сделки
-* Таблица всех сделок
-* Визуализация результатов
-
-### Как работает стратегия
-
-Используются две скользящие средние:
-
-* **SMA 20** — короткая средняя
-* **SMA 50** — длинная средняя
-
-Основное правило:
+## Структура проекта
 
 ```text
-SMA 20 > SMA 50 → BUY / LONG
-SMA 20 < SMA 50 → SELL / OUT
+sma-backtester/
+│
+├── data.py
+├── strategy.py
+├── metrics.py
+├── report.py
+├── charts.py
+├── main.py
+├── README.md
+└── README_EN.md
 ```
 
-BUY сигнал появляется при изменении:
-
-```text
-0 → 1
-```
-
-SELL сигнал появляется при изменении:
-
-```text
-1 → 0
-```
-
-Доходность стратегии рассчитывается с использованием сигнала предыдущего торгового дня.
-
-### Основные метрики
-
-**Total Return**
-
-Общая доходность стратегии за выбранный период.
-
-**Maximum Drawdown**
-
-Максимальное падение капитала от предыдущего максимума.
-
-**Win Rate**
-
-Процент прибыльных сделок:
-
-```text
-Winning trades / Total trades
-```
-
-**Average Trade**
-
-Средняя доходность одной завершённой сделки.
-
-**Best Trade**
-
-Самая прибыльная сделка.
-
-**Worst Trade**
-
-Самая убыточная сделка.
-
-### Графики
-
-Проект создаёт три графика.
-
-**1. Price Chart**
-
-Показывает:
-
-* цену AAPL
-* SMA 20
-* SMA 50
-* BUY сигналы
-* SELL сигналы
-
-**2. Performance Chart**
-
-Сравнивает:
-
-* SMA Strategy
-* Buy & Hold
-
-**3. Drawdown Chart**
-
-Сравнивает:
-
-* Drawdown SMA Strategy
-* Drawdown Buy & Hold
-* Maximum Drawdown обеих стратегий
-
-### Trade Analysis
-
-Для каждой завершённой сделки создаётся таблица:
-
-```text
-Trade
-BUY date
-BUY price
-SELL date
-SELL price
-Return (%)
-```
-
-Это позволяет отдельно анализировать результаты каждой сделки.
-
-### Установка
+## Установка
 
 Создать виртуальное окружение:
 
@@ -131,7 +46,7 @@ Return (%)
 python -m venv .venv
 ```
 
-Активировать его в PowerShell:
+Активировать его в Windows PowerShell:
 
 ```powershell
 .venv\Scripts\Activate.ps1
@@ -140,258 +55,107 @@ python -m venv .venv
 Установить зависимости:
 
 ```bash
-pip install pandas yfinance matplotlib
+pip install pandas numpy matplotlib yfinance
 ```
 
-### Запуск
+## Запуск
 
 ```bash
 python main.py
 ```
 
-### Структура проекта
+## Настройки стратегии
+
+Периоды SMA и комиссию можно изменить в `main.py`:
+
+```python
+fast_window = 20
+slow_window = 50
+commission = 0.001
+```
+
+Например:
+
+```python
+fast_window = 10
+slow_window = 30
+```
+
+## Логика стратегии
+
+BUY:
 
 ```text
-sma-backtester/
-│
-├── main.py
-├── README.md
-└── .gitignore
+SMA fast > SMA slow
 ```
 
-### Текущий результат
-
-На текущем тестовом периоде:
+SELL:
 
 ```text
-SMA Strategy
-Total return: 121.58%
-Maximum drawdown: -29.09%
-
-Buy & Hold
-Total return: 342.36%
-Maximum drawdown: -33.36%
-
-Number of trades: 20
-Winning trades: 10
-Losing trades: 10
-Win rate: 50.0%
-Average trade: 5.05%
+SMA fast < SMA slow
 ```
 
-Результаты зависят от выбранного периода и исторических данных.
+Стратегия использует сигнал предыдущего дня для расчёта доходности, чтобы избежать look-ahead bias.
 
-### Цель проекта
+## Transaction Costs
 
-Проект создан для практики работы с:
+Комиссия задаётся в виде десятичной доли.
 
-* Python
-* pandas
-* yfinance
-* matplotlib
-* торговыми стратегиями
-* backtesting
-* анализом доходности
-* анализом риска
-
-Проект предназначен для обучения и исследования и **не является финансовой рекомендацией**.
-
----
-
-# SMA Backtester
-
-## 🇬🇧 English Version
-
-A simple backtester for a trading strategy based on the crossover of **SMA 20** and **SMA 50**.
-
-The project downloads historical AAPL data, generates trading signals, and compares the strategy performance with a simple **Buy & Hold** approach.
-
-### Features
-
-* Download historical data using `yfinance`
-* Calculate SMA 20 and SMA 50
-* Generate BUY and SELL signals
-* Calculate total strategy return
-* Compare the strategy with Buy & Hold
-* Calculate Maximum Drawdown
-* Analyze individual trades
-* Calculate Win Rate
-* Calculate average trade return
-* Find the best and worst trades
-* Create a trade table
-* Visualize the results
-
-### How the Strategy Works
-
-The strategy uses two moving averages:
-
-* **SMA 20** — short-term moving average
-* **SMA 50** — long-term moving average
-
-Main rule:
+Например:
 
 ```text
-SMA 20 > SMA 50 → BUY / LONG
-SMA 20 < SMA 50 → SELL / OUT
+0.001 = 0.1%
 ```
 
-A BUY signal appears when the signal changes:
+Комиссия применяется при каждом BUY и SELL сигнале.
 
-```text
-0 → 1
-```
+## Метрики
 
-A SELL signal appears when the signal changes:
+### Total Return
 
-```text
-1 → 0
-```
+Общая доходность стратегии за весь период.
 
-Strategy returns are calculated using the previous trading day's signal.
+### CAGR
 
-### Main Metrics
+Среднегодовая сложная доходность.
 
-**Total Return**
+### Maximum Drawdown
 
-The total return of the strategy over the selected period.
+Максимальное падение капитала от предыдущего максимума.
 
-**Maximum Drawdown**
+### Sharpe Ratio
 
-The largest decline from a previous portfolio peak.
+Оценка доходности стратегии с учётом волатильности.
 
-**Win Rate**
+В расчёте используется годовая нормализация через 252 торговых дня.
 
-The percentage of profitable trades:
+## Buy & Hold
 
-```text
-Winning trades / Total trades
-```
+Результаты стратегии сравниваются с покупкой AAPL в начале периода и удержанием позиции до конца периода.
 
-**Average Trade**
+## Цель проекта
 
-The average return of a completed trade.
+Проект создан как учебный пример разработки простого backtesting framework на Python с разделением кода на:
 
-**Best Trade**
+* получение данных;
+* стратегию;
+* расчёт метрик;
+* отчёт;
+* визуализацию;
+* запуск приложения.
 
-The most profitable trade.
+## Ограничения
 
-**Worst Trade**
+Это учебный backtester, а не торговая система.
 
-The least profitable trade.
+Он не учитывает:
 
-### Charts
+* slippage;
+* bid/ask spread;
+* налоги;
+* дивиденды отдельно;
+* размер позиции;
+* управление капиталом;
+* market impact.
 
-The project creates three charts.
-
-**1. Price Chart**
-
-Shows:
-
-* AAPL price
-* SMA 20
-* SMA 50
-* BUY signals
-* SELL signals
-
-**2. Performance Chart**
-
-Compares:
-
-* SMA Strategy
-* Buy & Hold
-
-**3. Drawdown Chart**
-
-Compares:
-
-* SMA Strategy Drawdown
-* Buy & Hold Drawdown
-* Maximum Drawdown for both strategies
-
-### Trade Analysis
-
-A table is created for each completed trade:
-
-```text
-Trade
-BUY date
-BUY price
-SELL date
-SELL price
-Return (%)
-```
-
-This makes it possible to analyze each trade individually.
-
-### Installation
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it in PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Install the dependencies:
-
-```bash
-pip install pandas yfinance matplotlib
-```
-
-### Run
-
-```bash
-python main.py
-```
-
-### Project Structure
-
-```text
-sma-backtester/
-│
-├── main.py
-├── README.md
-└── .gitignore
-```
-
-### Current Results
-
-For the current test period:
-
-```text
-SMA Strategy
-Total return: 121.58%
-Maximum drawdown: -29.09%
-
-Buy & Hold
-Total return: 342.36%
-Maximum drawdown: -33.36%
-
-Number of trades: 20
-Winning trades: 10
-Losing trades: 10
-Win rate: 50.0%
-Average trade: 5.05%
-```
-
-Results depend on the selected period and historical data.
-
-### Project Goal
-
-This project was created to practice working with:
-
-* Python
-* pandas
-* yfinance
-* matplotlib
-* trading strategies
-* backtesting
-* return analysis
-* risk analysis
-
-This project is intended for educational and research purposes and **is not financial advice**.
+Результаты исторического backtest не гарантируют будущую доходность.
