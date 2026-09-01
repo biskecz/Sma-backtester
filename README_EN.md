@@ -4,6 +4,9 @@ A simple Python backtesting project for testing a moving-average crossover strat
 
 The project uses historical AAPL data and compares the SMA strategy against a passive Buy & Hold strategy.
 
+## Here you can see more:
+Demo on Youtube: https://www.youtube.com/watch?v=2nBrLU2di_k
+
 ## Features
 
 * historical AAPL data;
